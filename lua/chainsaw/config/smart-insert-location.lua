@@ -44,6 +44,49 @@ M.ftConfig = {
 			return assignmentExtraLines
 		end
 	end,
+	python = function(node)
+		local parent = node:parent()
+		if not parent then return end
+
+		local grandparent = parent:parent()
+
+		-- return statement
+		local inReturnStatement = parent:type() == "return_statement"
+			or (grandparent and grandparent:type() == "return_statement")
+		if inReturnStatement then return -1 end
+
+		-- need to check with statement next
+
+		-- for statement with multiple lines
+		if parent:type() == "for_statement" then
+			local right = parent:field("right")[1]
+			return (right:end_() - right:start()) - (node:start() - parent:start())
+		end
+		if grandparent and grandparent:type() == "for_statement" then
+			local right = grandparent:field("right")[1]
+			return (right:end_() - right:start()) - (node:start() - grandparent:start())
+		end
+
+		-- function parameters
+		if parent:type() == "parameters" then
+			return (parent:end_() - parent:start()) - (node:start() - parent:start())
+		end
+		if grandparent and grandparent:type() == "parameters" then
+			return (grandparent:end_() - grandparent:start()) - (node:start() - grandparent:start())
+		end
+
+		-- multiline assignment
+		-- traverse parent nodes until we encounter the surrounding expression_statement
+		local expression_root = node:parent()
+		while expression_root do
+			if expression_root:type() == "expression_statement" then
+				local assignmentExtraLines = (expression_root:end_() - expression_root:start())
+					- (node:start() - expression_root:start())
+				return assignmentExtraLines
+			end
+			expression_root = expression_root:parent()
+		end
+	end,
 }
 
 require("chainsaw.config.config").supersetInheritance(M.ftConfig)

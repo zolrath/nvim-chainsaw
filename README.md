@@ -212,6 +212,7 @@ end
 
 Filetypes currently supporting this feature:
 - Lua (and `nvim_lua`)
+- Python
 - JavaScript (and supersets)
 
 PRs adding support for more languages are welcome. See
