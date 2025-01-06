@@ -7,7 +7,7 @@ function M.getVar()
 	-- visual mode -> return selection
 	local mode = vim.fn.mode()
 	if mode:find("[Vv]") then
-		vim.cmd.normal { mode, bang = true } -- leave visual mode so `<`> mark sare set
+		vim.cmd.normal { mode, bang = true } -- leave visual mode so `<`> marks are set
 		local startLn, startCol = unpack(vim.api.nvim_buf_get_mark(0, "<"))
 		local endLn, endCol = unpack(vim.api.nvim_buf_get_mark(0, ">"))
 		local selection =
