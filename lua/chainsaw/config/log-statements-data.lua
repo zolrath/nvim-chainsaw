@@ -30,6 +30,10 @@ M.logStatements = {
 		ruby = 'puts "{{marker}} {{var}}: #{{{var}}.inspect}"',
 		go = 'fmt.Println("{{marker}} {{var}}:", {{var}})',
 		rust = 'println!("{} {}: {:?}", "{{marker}}", "{{var}}", {{var}});',
+		python = {
+			'print("{{marker}} {{var}} = ↴")',
+			'__import__("pprint").pprint({{var}})  # {{marker}}', -- python formatters expect 2 spaces before `#`
+		},
 	},
 	assertLog = {
 		lua = 'assert({{var}}, "{{marker}} {{var}}")',
@@ -100,7 +104,7 @@ M.logStatements = {
 	},
 	timeLogStart = {
 		lua = "local timelogStart{{index}} = os.clock() -- {{marker}}",
-		python = "timelog_start_{{index}} = time.perf_counter()  # {{marker}}",
+		python = "timelog_start_{{index}} = time.perf_counter()  # {{marker}}", -- python formatters expect 2 spaces before `#`
 		javascript = "const timelogStart{{index}} = Date.now(); // {{marker}}", -- not all JS engines support console.time
 		typescript = 'console.time("#{{index}} {{marker}}");', -- string needs to be identical to `console.timeEnd`
 		sh = "timelog_start_{{index}}=$(date +%s) # {{marker}}",
